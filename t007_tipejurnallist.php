@@ -74,6 +74,19 @@ $t007_tipejurnal_list->showMessage();
 ?>
 <?php if ($t007_tipejurnal_list->TotalRecords > 0 || $t007_tipejurnal->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t007_tipejurnal_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t007_tipejurnal">
+<?php if (!$t007_tipejurnal_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t007_tipejurnal_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t007_tipejurnal_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t007_tipejurnal_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft007_tipejurnallist" id="ft007_tipejurnallist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -218,19 +231,6 @@ $t007_tipejurnal_list->ListOptions->render("body", "right", $t007_tipejurnal_lis
 if ($t007_tipejurnal_list->Recordset)
 	$t007_tipejurnal_list->Recordset->Close();
 ?>
-<?php if (!$t007_tipejurnal_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t007_tipejurnal_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t007_tipejurnal_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t007_tipejurnal_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t007_tipejurnal_list->TotalRecords == 0 && !$t007_tipejurnal->CurrentAction) { // Show other options ?>

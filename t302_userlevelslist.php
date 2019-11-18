@@ -120,6 +120,19 @@ $t302_userlevels_list->showMessage();
 ?>
 <?php if ($t302_userlevels_list->TotalRecords > 0 || $t302_userlevels->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t302_userlevels_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t302_userlevels">
+<?php if (!$t302_userlevels_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t302_userlevels_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t302_userlevels_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t302_userlevels_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft302_userlevelslist" id="ft302_userlevelslist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -264,19 +277,6 @@ $t302_userlevels_list->ListOptions->render("body", "right", $t302_userlevels_lis
 if ($t302_userlevels_list->Recordset)
 	$t302_userlevels_list->Recordset->Close();
 ?>
-<?php if (!$t302_userlevels_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t302_userlevels_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t302_userlevels_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t302_userlevels_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t302_userlevels_list->TotalRecords == 0 && !$t302_userlevels->CurrentAction) { // Show other options ?>

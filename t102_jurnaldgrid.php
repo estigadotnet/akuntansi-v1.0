@@ -121,6 +121,12 @@ $t102_jurnald_grid->renderOtherOptions();
 ?>
 <?php if ($t102_jurnald_grid->TotalRecords > 0 || $t102_jurnald->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t102_jurnald_grid->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t102_jurnald">
+<?php if ($t102_jurnald_grid->ShowOtherOptions) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php $t102_jurnald_grid->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+<?php } ?>
 <div id="ft102_jurnaldgrid" class="ew-form ew-list-form form-inline">
 <div id="gmp_t102_jurnald" class="<?php echo ResponsiveTableClass() ?>card-body ew-grid-middle-panel">
 <table id="tbl_t102_jurnaldgrid" class="table ew-table"><!-- .ew-table -->
@@ -600,6 +606,54 @@ loadjs.ready(["ft102_jurnaldgrid", "load"], function() {
 	}
 ?>
 </tbody>
+<?php
+
+// Render aggregate row
+$t102_jurnald->RowType = ROWTYPE_AGGREGATE;
+$t102_jurnald->resetAttributes();
+$t102_jurnald_grid->renderRow();
+?>
+<?php if ($t102_jurnald_grid->TotalRecords > 0 && $t102_jurnald->CurrentMode == "view") { ?>
+<tfoot><!-- Table footer -->
+	<tr class="ew-table-footer">
+<?php
+
+// Render list options
+$t102_jurnald_grid->renderListOptions();
+
+// Render list options (footer, left)
+$t102_jurnald_grid->ListOptions->render("footer", "left");
+?>
+	<?php if ($t102_jurnald_grid->jurnal_id->Visible) { // jurnal_id ?>
+		<td data-name="jurnal_id" class="<?php echo $t102_jurnald_grid->jurnal_id->footerCellClass() ?>"><span id="elf_t102_jurnald_jurnal_id" class="t102_jurnald_jurnal_id">
+		&nbsp;
+		</span></td>
+	<?php } ?>
+	<?php if ($t102_jurnald_grid->akun_id->Visible) { // akun_id ?>
+		<td data-name="akun_id" class="<?php echo $t102_jurnald_grid->akun_id->footerCellClass() ?>"><span id="elf_t102_jurnald_akun_id" class="t102_jurnald_akun_id">
+		&nbsp;
+		</span></td>
+	<?php } ?>
+	<?php if ($t102_jurnald_grid->debet->Visible) { // debet ?>
+		<td data-name="debet" class="<?php echo $t102_jurnald_grid->debet->footerCellClass() ?>"><span id="elf_t102_jurnald_debet" class="t102_jurnald_debet">
+		<span class="ew-aggregate"><?php echo $Language->phrase("TOTAL") ?></span><span class="ew-aggregate-value">
+		<?php echo $t102_jurnald_grid->debet->ViewValue ?></span>
+		</span></td>
+	<?php } ?>
+	<?php if ($t102_jurnald_grid->kredit->Visible) { // kredit ?>
+		<td data-name="kredit" class="<?php echo $t102_jurnald_grid->kredit->footerCellClass() ?>"><span id="elf_t102_jurnald_kredit" class="t102_jurnald_kredit">
+		<span class="ew-aggregate"><?php echo $Language->phrase("TOTAL") ?></span><span class="ew-aggregate-value">
+		<?php echo $t102_jurnald_grid->kredit->ViewValue ?></span>
+		</span></td>
+	<?php } ?>
+<?php
+
+// Render list options (footer, right)
+$t102_jurnald_grid->ListOptions->render("footer", "right");
+?>
+	</tr>
+</tfoot>
+<?php } ?>
 </table><!-- /.ew-table -->
 </div><!-- /.ew-grid-middle-panel -->
 <?php if ($t102_jurnald->CurrentMode == "add" || $t102_jurnald->CurrentMode == "copy") { ?>
@@ -621,12 +675,6 @@ loadjs.ready(["ft102_jurnaldgrid", "load"], function() {
 if ($t102_jurnald_grid->Recordset)
 	$t102_jurnald_grid->Recordset->Close();
 ?>
-<?php if ($t102_jurnald_grid->ShowOtherOptions) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php $t102_jurnald_grid->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t102_jurnald_grid->TotalRecords == 0 && !$t102_jurnald->CurrentAction) { // Show other options ?>

@@ -74,6 +74,19 @@ $t001_grup_list->showMessage();
 ?>
 <?php if ($t001_grup_list->TotalRecords > 0 || $t001_grup->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t001_grup_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t001_grup">
+<?php if (!$t001_grup_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t001_grup_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t001_grup_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t001_grup_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft001_gruplist" id="ft001_gruplist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -202,19 +215,6 @@ $t001_grup_list->ListOptions->render("body", "right", $t001_grup_list->RowCount)
 if ($t001_grup_list->Recordset)
 	$t001_grup_list->Recordset->Close();
 ?>
-<?php if (!$t001_grup_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t001_grup_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t001_grup_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t001_grup_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t001_grup_list->TotalRecords == 0 && !$t001_grup->CurrentAction) { // Show other options ?>

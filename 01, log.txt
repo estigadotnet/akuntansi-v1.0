@@ -1,82 +1,28 @@
-<strong>----- on progress --------------------------------------------------------------------------</strong>
+<font color="red"><strong>----- to do --------------------------------------------------------------------------------</strong>
+ 1. SETUP - PERUSAHAAN
+ 2. laporan2 keuangan
+ 3. transaksi - jurnal, tampilkan dan check balance saldo jurnal-detail
+ 4. tampilkan di dashboard, data periode periode aktif saat ini
+ 5. tutup buku, bagaimana mekanismenya
+ 6. general - backup
+ 7. general - restore
+ 8. tata ulang posisi daftar menu di bawah menu SETUP, sesuaikan dengan proses yang berhubungan
+ 9. beri warning di home untuk jurnal yang belum balance
+
+
+
+
+
+</font><strong>----- on progress --------------------------------------------------------------------------</strong>
+
 
 
 
 
 <strong>----- change log ---------------------------------------------------------------------------</strong>
-- 2:41 PM 9/30/2019
-  - tambah view v110, belum ditambahkan di customer
 
 
 
 
-<font color="red"><strong>----- to do --------------------------------------------------------------------------------</strong>
-- fitur naik kelas
 
-- upload data TK
-
-
-
-
-</font><strong>----- start - finish -----------------------------------------------------------------------</strong>
-s1:49 PM 10/10/2019 - f12:06 PM 10/14/2019
-- penambahan dan pengurangan iuran, bisa untuk 1 (satu) siswa, ataupun untuk semua siswa, bisa multi-select
-  atau per kelas
-
-
-s9:57 AM 10/7/2019 - f2:54 PM 10/7/2019
-  - pembayaran, centang diubah menjadi read-only apabila sudah tutup buku bulanan
-
-
-s5:43 PM 10/3/2019 - f12:44 PM 10/5/2019
-  - laporan tunggakan,
-    - harus periksa tipe iuran, apakah rutin atau non-rutin,
-      apabila non-rutin :: harus periksa dulu selisih antara yang sudah dibayar dengan jumlah yang ditentukan
-      di daftar siswa & iuran
-
-
-s3:36 PM 10/3/2019 - f3:37 PM 10/3/2019
-  - di laporan pembayaran dan tunggakan :: perlu diberi total
-
-
-s10:35 AM 10/3/2019 - f3:34 PM 10/3/2019
-  - di laporan uang masuk dan potensi uang masuk :: perlu diberi range tanggal
-
-
-s? - f7:11 PM 9/30/2019
-  - Pembayaran, Cetak Bukti Pembayaran
-
-
-s? - f12:50 PM 9/30/2019
-  - General, Backup
-
-
-s9:36 AM 9/27/2019 - f2:16 PM 9/27/2019
-  - Laporan, Tunggakan
-    - gimana caranya membangkitkan combobox periode ? sedangkan di database tidak ada field yang bisa
-      dijadikan acuan untuk membangkitkan combobox periode ... sekaligus sebagai filtering data
-      ? ? ? ?
-
-
-s4:30 PM 9/26/2019 - f?
-  - Laporan, Pembayaran
-
-
-s? - f4:29 PM 9/26/2019
-  - Pembayaran
-
-
-s2:24 PM 9/26/2019 - f3:38 PM 9/26/2019
-  - Daftar, Siswa & Iuran
-
-
-s? - f2:23 PM 9/26/2019
-  - Daftar, Kelas & Siswa
-
-
-s? - f12:36 PM 9/26/2019
-  - Setup, Tahun Ajaran
-  - Setup, Sekolah
-  - Setup, Kelas
-  - Setup, Siswa
-  - Setup, Iuran 
+<strong>----- start - finish -----------------------------------------------------------------------</strong>

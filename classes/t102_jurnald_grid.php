@@ -1339,6 +1339,12 @@ class t102_jurnald_grid extends t102_jurnald
 		$item->OnLeft = TRUE;
 		$item->Visible = FALSE;
 
+		// "edit"
+		$item = &$this->ListOptions->add("edit");
+		$item->CssClass = "text-nowrap";
+		$item->Visible = $Security->canEdit();
+		$item->OnLeft = TRUE;
+
 		// "sequence"
 		$item = &$this->ListOptions->add("sequence");
 		$item->CssClass = "text-nowrap";
@@ -1413,6 +1419,15 @@ class t102_jurnald_grid extends t102_jurnald
 		$opt = $this->ListOptions["sequence"];
 		$opt->Body = FormatSequenceNumber($this->RecordCount);
 		if ($this->CurrentMode == "view") { // View mode
+
+		// "edit"
+		$opt = $this->ListOptions["edit"];
+		$editcaption = HtmlTitle($Language->phrase("EditLink"));
+		if ($Security->canEdit()) {
+			$opt->Body = "<a class=\"ew-row-link ew-edit\" title=\"" . HtmlTitle($Language->phrase("EditLink")) . "\" data-caption=\"" . HtmlTitle($Language->phrase("EditLink")) . "\" href=\"" . HtmlEncode($this->EditUrl) . "\">" . $Language->phrase("EditLink") . "</a>";
+		} else {
+			$opt->Body = "";
+		}
 		} // End View mode
 		if ($this->CurrentMode == "edit" && is_numeric($this->RowIndex) && $this->RowAction != "delete") {
 			$this->MultiSelectKey .= "<input type=\"hidden\" name=\"" . $keyName . "\" id=\"" . $keyName . "\" value=\"" . $this->id->CurrentValue . "\">";
@@ -1714,7 +1729,14 @@ class t102_jurnald_grid extends t102_jurnald
 		// akun_id
 		// debet
 		// kredit
+		// Accumulate aggregate value
 
+		if ($this->RowType != ROWTYPE_AGGREGATEINIT && $this->RowType != ROWTYPE_AGGREGATE) {
+			if (is_numeric($this->debet->CurrentValue))
+				$this->debet->Total += $this->debet->CurrentValue; // Accumulate total
+			if (is_numeric($this->kredit->CurrentValue))
+				$this->kredit->Total += $this->kredit->CurrentValue; // Accumulate total
+		}
 		if ($this->RowType == ROWTYPE_VIEW) { // View row
 
 			// id
@@ -2048,6 +2070,22 @@ class t102_jurnald_grid extends t102_jurnald
 			// kredit
 			$this->kredit->LinkCustomAttributes = "";
 			$this->kredit->HrefValue = "";
+		} elseif ($this->RowType == ROWTYPE_AGGREGATEINIT) { // Initialize aggregate row
+			$this->debet->Total = 0; // Initialize total
+			$this->kredit->Total = 0; // Initialize total
+		} elseif ($this->RowType == ROWTYPE_AGGREGATE) { // Aggregate row
+			$this->debet->CurrentValue = $this->debet->Total;
+			$this->debet->ViewValue = $this->debet->CurrentValue;
+			$this->debet->ViewValue = FormatNumber($this->debet->ViewValue, 0, -2, -2, -2);
+			$this->debet->CellCssStyle .= "text-align: right;";
+			$this->debet->ViewCustomAttributes = "";
+			$this->debet->HrefValue = ""; // Clear href value
+			$this->kredit->CurrentValue = $this->kredit->Total;
+			$this->kredit->ViewValue = $this->kredit->CurrentValue;
+			$this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, 0, -2, -2, -2);
+			$this->kredit->CellCssStyle .= "text-align: right;";
+			$this->kredit->ViewCustomAttributes = "";
+			$this->kredit->HrefValue = ""; // Clear href value
 		}
 		if ($this->RowType == ROWTYPE_ADD || $this->RowType == ROWTYPE_EDIT || $this->RowType == ROWTYPE_SEARCH) // Add/Edit/Search row
 			$this->setupFieldTitles();
@@ -2200,25 +2238,6 @@ class t102_jurnald_grid extends t102_jurnald
 		$oldKeyFilter = $this->getRecordFilter();
 		$filter = $this->applyUserIDFilters($oldKeyFilter);
 		$conn = $this->getConnection();
-		if ($this->akun_id->CurrentValue != "") { // Check field with unique index
-			$filterChk = "(`akun_id` = " . AdjustSql($this->akun_id->CurrentValue, $this->Dbid) . ")";
-			$filterChk .= " AND NOT (" . $filter . ")";
-			$this->CurrentFilter = $filterChk;
-			$sqlChk = $this->getCurrentSql();
-			$conn->raiseErrorFn = Config("ERROR_FUNC");
-			$rsChk = $conn->Execute($sqlChk);
-			$conn->raiseErrorFn = "";
-			if ($rsChk === FALSE) {
-				return FALSE;
-			} elseif (!$rsChk->EOF) {
-				$idxErrMsg = str_replace("%f", $this->akun_id->caption(), $Language->phrase("DupIndex"));
-				$idxErrMsg = str_replace("%v", $this->akun_id->CurrentValue, $idxErrMsg);
-				$this->setFailureMessage($idxErrMsg);
-				$rsChk->close();
-				return FALSE;
-			}
-			$rsChk->close();
-		}
 		$this->CurrentFilter = $filter;
 		$sql = $this->getCurrentSql();
 		$conn->raiseErrorFn = Config("ERROR_FUNC");
@@ -2332,17 +2351,6 @@ class t102_jurnald_grid extends t102_jurnald
 			if ($this->getCurrentMasterTable() == "t101_jurnal") {
 				$this->jurnal_id->CurrentValue = $this->jurnal_id->getSessionValue();
 			}
-		if ($this->akun_id->CurrentValue != "") { // Check field with unique index
-			$filter = "(akun_id = " . AdjustSql($this->akun_id->CurrentValue, $this->Dbid) . ")";
-			$rsChk = $this->loadRs($filter);
-			if ($rsChk && !$rsChk->EOF) {
-				$idxErrMsg = str_replace("%f", $this->akun_id->caption(), $Language->phrase("DupIndex"));
-				$idxErrMsg = str_replace("%v", $this->akun_id->CurrentValue, $idxErrMsg);
-				$this->setFailureMessage($idxErrMsg);
-				$rsChk->close();
-				return FALSE;
-			}
-		}
 
 		// Check referential integrity for master table 't102_jurnald'
 		$validMasterRecord = TRUE;

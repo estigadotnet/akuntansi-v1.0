@@ -120,6 +120,19 @@ $t301_employees_list->showMessage();
 ?>
 <?php if ($t301_employees_list->TotalRecords > 0 || $t301_employees->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t301_employees_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t301_employees">
+<?php if (!$t301_employees_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t301_employees_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t301_employees_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t301_employees_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft301_employeeslist" id="ft301_employeeslist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -568,19 +581,6 @@ $t301_employees_list->ListOptions->render("body", "right", $t301_employees_list-
 if ($t301_employees_list->Recordset)
 	$t301_employees_list->Recordset->Close();
 ?>
-<?php if (!$t301_employees_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t301_employees_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t301_employees_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t301_employees_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t301_employees_list->TotalRecords == 0 && !$t301_employees->CurrentAction) { // Show other options ?>

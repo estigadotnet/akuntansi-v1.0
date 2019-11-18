@@ -102,6 +102,10 @@ loadjs.ready("head", function() {
 	ft101_jurnaladd.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
 
 		// Your custom validation code here, return false if invalid.
+		if(debet_total != kredit_total) {
+			alert('saldo belum balance');
+			return false;
+		}
 		return true;
 	}
 
@@ -196,9 +200,7 @@ if (Config("DEBUG"))
 loadjs.ready("load", function() {
 
 	// Startup script
-	// Write your table-specific startup script here
-	// console.log("page loaded");
-
+	$("#elh_t101_jurnal_keterangan").appendTo('[class="card ew-card ew-grid ew-grid-add-edit t102_jurnald"]'),$("#x_keterangan").appendTo('[class="card ew-card ew-grid ew-grid-add-edit t102_jurnald"]'),$("#x_nomer").appendTo('[class="card ew-card ew-grid ew-grid-add-edit t102_jurnald"]'),$("#x_tipejurnal_id").appendTo('[class="card ew-card ew-grid ew-grid-add-edit t102_jurnald"]'),$("#elh_t101_jurnal_nomer").hide(),debet_onchange=function(e){var d=$(e.target).val();debet_new=parseInt(d),isNaN(debet_old)&&(debet_old=0),isNaN(debet_new)&&(debet_new=0),debet_total=debet_total-debet_old+debet_new},debet_onfocus=function(e){var d=$(e.target).val();debet_old=parseInt(d)},kredit_onchange=function(e){var d=$(e.target).val();kredit_new=parseInt(d),isNaN(kredit_old)&&(kredit_old=0),isNaN(kredit_new)&&(kredit_new=0),kredit_total=kredit_total-kredit_old+kredit_new},kredit_onfocus=function(e){var d=$(e.target).val();kredit_old=parseInt(d)};
 });
 </script>
 <?php include_once "footer.php"; ?>

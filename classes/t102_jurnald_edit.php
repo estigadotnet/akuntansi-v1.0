@@ -636,12 +636,6 @@ class t102_jurnald_edit extends t102_jurnald
 	public $IsMobileOrModal = FALSE;
 	public $DbMasterFilter;
 	public $DbDetailFilter;
-	public $DisplayRecords = 1;
-	public $StartRecord;
-	public $StopRecord;
-	public $TotalRecords = 0;
-	public $RecordRange = 10;
-	public $RecordCount;
 
 	//
 	// Page run
@@ -721,9 +715,6 @@ class t102_jurnald_edit extends t102_jurnald
 			$SkipHeaderFooter = TRUE;
 		$this->IsMobileOrModal = IsMobile() || $this->IsModal;
 		$this->FormClassName = "ew-form ew-edit-form ew-horizontal";
-
-		// Load record by position
-		$loadByPosition = FALSE;
 		$loaded = FALSE;
 		$postBack = FALSE;
 
@@ -751,47 +742,13 @@ class t102_jurnald_edit extends t102_jurnald
 			} else {
 				$this->id->CurrentValue = NULL;
 			}
-			if (!$loadByQuery)
-				$loadByPosition = TRUE;
 		}
 
 		// Set up master detail parameters
 		$this->setupMasterParms();
 
-		// Load recordset
-		$this->StartRecord = 1; // Initialize start position
-		if ($rs = $this->loadRecordset()) // Load records
-			$this->TotalRecords = $rs->RecordCount(); // Get record count
-		if ($this->TotalRecords <= 0) { // No record found
-			if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
-				$this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
-			$this->terminate("t102_jurnaldlist.php"); // Return to list page
-		} elseif ($loadByPosition) { // Load record by position
-			$this->setupStartRecord(); // Set up start record position
-
-			// Point to current record
-			if ($this->StartRecord <= $this->TotalRecords) {
-				$rs->move($this->StartRecord - 1);
-				$loaded = TRUE;
-			}
-		} else { // Match key values
-			if ($this->id->CurrentValue != NULL) {
-				while (!$rs->EOF) {
-					if (SameString($this->id->CurrentValue, $rs->fields('id'))) {
-						$this->setStartRecordNumber($this->StartRecord); // Save record position
-						$loaded = TRUE;
-						break;
-					} else {
-						$this->StartRecord++;
-						$rs->moveNext();
-					}
-				}
-			}
-		}
-
-		// Load current row values
-		if ($loaded)
-			$this->loadRowValues($rs);
+		// Load current record
+		$loaded = $this->loadRow();
 
 		// Process form if post back
 		if ($postBack) {
@@ -816,11 +773,10 @@ class t102_jurnald_edit extends t102_jurnald
 		// Perform current action
 		switch ($this->CurrentAction) {
 			case "show": // Get a record to display
-				if (!$loaded) {
-					if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
-						$this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
-					$this->terminate("t102_jurnaldlist.php"); // Return to list page
-				} else {
+				if (!$loaded) { // Load record based on key
+					if ($this->getFailureMessage() == "")
+						$this->setFailureMessage($Language->phrase("NoRecord")); // No record found
+					$this->terminate("t102_jurnaldlist.php"); // No matching record, return to list
 				}
 				break;
 			case "update": // Update
@@ -855,7 +811,6 @@ class t102_jurnald_edit extends t102_jurnald
 		$this->RowType = ROWTYPE_EDIT; // Render as Edit
 		$this->resetAttributes();
 		$this->renderRow();
-		$this->Pager = new PrevNextPager($this->StartRecord, $this->DisplayRecords, $this->TotalRecords, "", $this->RecordRange, $this->AutoHidePager);
 	}
 
 	// Get upload files
@@ -922,33 +877,6 @@ class t102_jurnald_edit extends t102_jurnald
 		$this->akun_id->CurrentValue = $this->akun_id->FormValue;
 		$this->debet->CurrentValue = $this->debet->FormValue;
 		$this->kredit->CurrentValue = $this->kredit->FormValue;
-	}
-
-	// Load recordset
-	public function loadRecordset($offset = -1, $rowcnt = -1)
-	{
-
-		// Load List page SQL
-		$sql = $this->getListSql();
-		$conn = $this->getConnection();
-
-		// Load recordset
-		$dbtype = GetConnectionType($this->Dbid);
-		if ($this->UseSelectLimit) {
-			$conn->raiseErrorFn = Config("ERROR_FUNC");
-			if ($dbtype == "MSSQL") {
-				$rs = $conn->selectLimit($sql, $rowcnt, $offset, ["_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderBy())]);
-			} else {
-				$rs = $conn->selectLimit($sql, $rowcnt, $offset);
-			}
-			$conn->raiseErrorFn = "";
-		} else {
-			$rs = LoadRecordset($sql, $conn);
-		}
-
-		// Call Recordset Selected event
-		$this->Recordset_Selected($rs);
-		return $rs;
 	}
 
 	// Load row based on key values
@@ -1325,25 +1253,6 @@ class t102_jurnald_edit extends t102_jurnald
 		$oldKeyFilter = $this->getRecordFilter();
 		$filter = $this->applyUserIDFilters($oldKeyFilter);
 		$conn = $this->getConnection();
-		if ($this->akun_id->CurrentValue != "") { // Check field with unique index
-			$filterChk = "(`akun_id` = " . AdjustSql($this->akun_id->CurrentValue, $this->Dbid) . ")";
-			$filterChk .= " AND NOT (" . $filter . ")";
-			$this->CurrentFilter = $filterChk;
-			$sqlChk = $this->getCurrentSql();
-			$conn->raiseErrorFn = Config("ERROR_FUNC");
-			$rsChk = $conn->Execute($sqlChk);
-			$conn->raiseErrorFn = "";
-			if ($rsChk === FALSE) {
-				return FALSE;
-			} elseif (!$rsChk->EOF) {
-				$idxErrMsg = str_replace("%f", $this->akun_id->caption(), $Language->phrase("DupIndex"));
-				$idxErrMsg = str_replace("%v", $this->akun_id->CurrentValue, $idxErrMsg);
-				$this->setFailureMessage($idxErrMsg);
-				$rsChk->close();
-				return FALSE;
-			}
-			$rsChk->close();
-		}
 		$this->CurrentFilter = $filter;
 		$sql = $this->getCurrentSql();
 		$conn->raiseErrorFn = Config("ERROR_FUNC");

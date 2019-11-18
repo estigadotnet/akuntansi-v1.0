@@ -64,6 +64,14 @@ loadjs.ready("head", function() {
 <?php
 $t101_jurnal_view->showMessage();
 ?>
+<?php if (!$t101_jurnal_view->IsModal) { ?>
+<?php if (!$t101_jurnal_view->isExport()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t101_jurnal_view->Pager->render() ?>
+<div class="clearfix"></div>
+</form>
+<?php } ?>
+<?php } ?>
 <form name="ft101_jurnalview" id="ft101_jurnalview" class="form-inline ew-form ew-view-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -102,12 +110,6 @@ $t101_jurnal_view->showMessage();
 	</tr>
 <?php } ?>
 </table>
-<?php if (!$t101_jurnal_view->IsModal) { ?>
-<?php if (!$t101_jurnal_view->isExport()) { ?>
-<?php echo $t101_jurnal_view->Pager->render() ?>
-<div class="clearfix"></div>
-<?php } ?>
-<?php } ?>
 <?php
 	if (in_array("t102_jurnald", explode(",", $t101_jurnal->getCurrentDetailTable())) && $t102_jurnald->DetailView) {
 ?>

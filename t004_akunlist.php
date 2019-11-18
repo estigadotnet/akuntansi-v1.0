@@ -120,6 +120,19 @@ $t004_akun_list->showMessage();
 ?>
 <?php if ($t004_akun_list->TotalRecords > 0 || $t004_akun->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t004_akun_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t004_akun">
+<?php if (!$t004_akun_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t004_akun_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t004_akun_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t004_akun_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft004_akunlist" id="ft004_akunlist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -296,19 +309,6 @@ $t004_akun_list->ListOptions->render("body", "right", $t004_akun_list->RowCount)
 if ($t004_akun_list->Recordset)
 	$t004_akun_list->Recordset->Close();
 ?>
-<?php if (!$t004_akun_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t004_akun_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t004_akun_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t004_akun_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t004_akun_list->TotalRecords == 0 && !$t004_akun->CurrentAction) { // Show other options ?>

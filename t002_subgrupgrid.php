@@ -95,6 +95,12 @@ $t002_subgrup_grid->renderOtherOptions();
 ?>
 <?php if ($t002_subgrup_grid->TotalRecords > 0 || $t002_subgrup->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t002_subgrup_grid->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t002_subgrup">
+<?php if ($t002_subgrup_grid->ShowOtherOptions) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php $t002_subgrup_grid->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+<?php } ?>
 <div id="ft002_subgrupgrid" class="ew-form ew-list-form form-inline">
 <div id="gmp_t002_subgrup" class="<?php echo ResponsiveTableClass() ?>card-body ew-grid-middle-panel">
 <table id="tbl_t002_subgrupgrid" class="table ew-table"><!-- .ew-table -->
@@ -409,12 +415,6 @@ loadjs.ready(["ft002_subgrupgrid", "load"], function() {
 if ($t002_subgrup_grid->Recordset)
 	$t002_subgrup_grid->Recordset->Close();
 ?>
-<?php if ($t002_subgrup_grid->ShowOtherOptions) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php $t002_subgrup_grid->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t002_subgrup_grid->TotalRecords == 0 && !$t002_subgrup->CurrentAction) { // Show other options ?>

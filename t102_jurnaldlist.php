@@ -170,6 +170,19 @@ $t102_jurnald_list->showMessage();
 ?>
 <?php if ($t102_jurnald_list->TotalRecords > 0 || $t102_jurnald->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t102_jurnald_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t102_jurnald">
+<?php if (!$t102_jurnald_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t102_jurnald_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t102_jurnald_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t102_jurnald_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft102_jurnaldlist" id="ft102_jurnaldlist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -602,6 +615,54 @@ loadjs.ready(["ft102_jurnaldlist", "load"], function() {
 	}
 ?>
 </tbody>
+<?php
+
+// Render aggregate row
+$t102_jurnald->RowType = ROWTYPE_AGGREGATE;
+$t102_jurnald->resetAttributes();
+$t102_jurnald_list->renderRow();
+?>
+<?php if ($t102_jurnald_list->TotalRecords > 0 && !$t102_jurnald_list->isGridAdd() && !$t102_jurnald_list->isGridEdit()) { ?>
+<tfoot><!-- Table footer -->
+	<tr class="ew-table-footer">
+<?php
+
+// Render list options
+$t102_jurnald_list->renderListOptions();
+
+// Render list options (footer, left)
+$t102_jurnald_list->ListOptions->render("footer", "left");
+?>
+	<?php if ($t102_jurnald_list->jurnal_id->Visible) { // jurnal_id ?>
+		<td data-name="jurnal_id" class="<?php echo $t102_jurnald_list->jurnal_id->footerCellClass() ?>"><span id="elf_t102_jurnald_jurnal_id" class="t102_jurnald_jurnal_id">
+		&nbsp;
+		</span></td>
+	<?php } ?>
+	<?php if ($t102_jurnald_list->akun_id->Visible) { // akun_id ?>
+		<td data-name="akun_id" class="<?php echo $t102_jurnald_list->akun_id->footerCellClass() ?>"><span id="elf_t102_jurnald_akun_id" class="t102_jurnald_akun_id">
+		&nbsp;
+		</span></td>
+	<?php } ?>
+	<?php if ($t102_jurnald_list->debet->Visible) { // debet ?>
+		<td data-name="debet" class="<?php echo $t102_jurnald_list->debet->footerCellClass() ?>"><span id="elf_t102_jurnald_debet" class="t102_jurnald_debet">
+		<span class="ew-aggregate"><?php echo $Language->phrase("TOTAL") ?></span><span class="ew-aggregate-value">
+		<?php echo $t102_jurnald_list->debet->ViewValue ?></span>
+		</span></td>
+	<?php } ?>
+	<?php if ($t102_jurnald_list->kredit->Visible) { // kredit ?>
+		<td data-name="kredit" class="<?php echo $t102_jurnald_list->kredit->footerCellClass() ?>"><span id="elf_t102_jurnald_kredit" class="t102_jurnald_kredit">
+		<span class="ew-aggregate"><?php echo $Language->phrase("TOTAL") ?></span><span class="ew-aggregate-value">
+		<?php echo $t102_jurnald_list->kredit->ViewValue ?></span>
+		</span></td>
+	<?php } ?>
+<?php
+
+// Render list options (footer, right)
+$t102_jurnald_list->ListOptions->render("footer", "right");
+?>
+	</tr>
+</tfoot>
+<?php } ?>
 </table><!-- /.ew-table -->
 <?php } ?>
 </div><!-- /.ew-grid-middle-panel -->
@@ -625,19 +686,6 @@ loadjs.ready(["ft102_jurnaldlist", "load"], function() {
 if ($t102_jurnald_list->Recordset)
 	$t102_jurnald_list->Recordset->Close();
 ?>
-<?php if (!$t102_jurnald_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t102_jurnald_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t102_jurnald_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t102_jurnald_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t102_jurnald_list->TotalRecords == 0 && !$t102_jurnald->CurrentAction) { // Show other options ?>

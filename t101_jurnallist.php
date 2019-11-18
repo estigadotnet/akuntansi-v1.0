@@ -120,6 +120,19 @@ $t101_jurnal_list->showMessage();
 ?>
 <?php if ($t101_jurnal_list->TotalRecords > 0 || $t101_jurnal->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t101_jurnal_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t101_jurnal">
+<?php if (!$t101_jurnal_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t101_jurnal_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t101_jurnal_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t101_jurnal_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft101_jurnallist" id="ft101_jurnallist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -280,19 +293,6 @@ $t101_jurnal_list->ListOptions->render("body", "right", $t101_jurnal_list->RowCo
 if ($t101_jurnal_list->Recordset)
 	$t101_jurnal_list->Recordset->Close();
 ?>
-<?php if (!$t101_jurnal_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t101_jurnal_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t101_jurnal_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t101_jurnal_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t101_jurnal_list->TotalRecords == 0 && !$t101_jurnal->CurrentAction) { // Show other options ?>

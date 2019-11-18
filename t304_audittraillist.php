@@ -120,6 +120,19 @@ $t304_audittrail_list->showMessage();
 ?>
 <?php if ($t304_audittrail_list->TotalRecords > 0 || $t304_audittrail->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t304_audittrail_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t304_audittrail">
+<?php if (!$t304_audittrail_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t304_audittrail_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t304_audittrail_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t304_audittrail_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft304_audittraillist" id="ft304_audittraillist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -344,19 +357,6 @@ $t304_audittrail_list->ListOptions->render("body", "right", $t304_audittrail_lis
 if ($t304_audittrail_list->Recordset)
 	$t304_audittrail_list->Recordset->Close();
 ?>
-<?php if (!$t304_audittrail_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t304_audittrail_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t304_audittrail_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t304_audittrail_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t304_audittrail_list->TotalRecords == 0 && !$t304_audittrail->CurrentAction) { // Show other options ?>

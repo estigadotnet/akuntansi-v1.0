@@ -64,6 +64,14 @@ loadjs.ready("head", function() {
 <?php
 $t302_userlevels_view->showMessage();
 ?>
+<?php if (!$t302_userlevels_view->IsModal) { ?>
+<?php if (!$t302_userlevels_view->isExport()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t302_userlevels_view->Pager->render() ?>
+<div class="clearfix"></div>
+</form>
+<?php } ?>
+<?php } ?>
 <form name="ft302_userlevelsview" id="ft302_userlevelsview" class="form-inline ew-form ew-view-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">

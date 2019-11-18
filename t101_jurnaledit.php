@@ -102,6 +102,10 @@ loadjs.ready("head", function() {
 	ft101_jurnaledit.Form_CustomValidate = function(fobj) { // DO NOT CHANGE THIS LINE!
 
 		// Your custom validation code here, return false if invalid.
+		if(debet_total != kredit_total) {
+			alert('saldo belum balance');
+			return false;
+		}
 		return true;
 	}
 
@@ -187,10 +191,6 @@ $t101_jurnal_edit->showMessage();
 	</div><!-- /buttons offset -->
 </div><!-- /buttons .form-group -->
 <?php } ?>
-<?php if (!$t101_jurnal_edit->IsModal) { ?>
-<?php echo $t101_jurnal_edit->Pager->render() ?>
-<div class="clearfix"></div>
-<?php } ?>
 </form>
 <?php
 $t101_jurnal_edit->showPageFooter();
@@ -201,9 +201,7 @@ if (Config("DEBUG"))
 loadjs.ready("load", function() {
 
 	// Startup script
-	// Write your table-specific startup script here
-	// console.log("page loaded");
-
+	debet_onchange=function(e){var t=$(e.target).val();debet_new=parseInt(t),isNaN(debet_old)&&(debet_old=0),isNaN(debet_new)&&(debet_new=0),debet_total=debet_total-debet_old+debet_new},debet_onfocus=function(e){var t=$(e.target).val();debet_old=parseInt(t)},kredit_onchange=function(e){var t=$(e.target).val();kredit_new=parseInt(t),isNaN(kredit_old)&&(kredit_old=0),isNaN(kredit_new)&&(kredit_new=0),kredit_total=kredit_total-kredit_old+kredit_new},kredit_onfocus=function(e){var t=$(e.target).val();kredit_old=parseInt(t)};
 });
 </script>
 <?php include_once "footer.php"; ?>

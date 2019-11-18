@@ -181,6 +181,19 @@ $t003_matauang_list->showMessage();
 ?>
 <?php if ($t003_matauang_list->TotalRecords > 0 || $t003_matauang->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t003_matauang_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t003_matauang">
+<?php if (!$t003_matauang_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t003_matauang_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t003_matauang_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t003_matauang_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft003_matauanglist" id="ft003_matauanglist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -474,19 +487,6 @@ loadjs.ready(["ft003_matauanglist", "load"], function() {
 if ($t003_matauang_list->Recordset)
 	$t003_matauang_list->Recordset->Close();
 ?>
-<?php if (!$t003_matauang_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t003_matauang_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t003_matauang_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t003_matauang_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t003_matauang_list->TotalRecords == 0 && !$t003_matauang->CurrentAction) { // Show other options ?>

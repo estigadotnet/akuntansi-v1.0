@@ -1519,7 +1519,7 @@ class t101_jurnal_list extends t101_jurnal
 		// Drop down button for ListOptions
 		$this->ListOptions->UseDropDownButton = FALSE;
 		$this->ListOptions->DropDownButtonPhrase = $Language->phrase("ButtonListOptions");
-		$this->ListOptions->UseButtonGroup = TRUE;
+		$this->ListOptions->UseButtonGroup = FALSE;
 		if ($this->ListOptions->UseButtonGroup && IsMobile())
 			$this->ListOptions->UseDropDownButton = TRUE;
 

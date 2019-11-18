@@ -1,0 +1,1 @@
+var jurnal_kode,total_nilai,nilai_detail_current,debet_old=0,debet_new=0,debet_total=0,kredit_old=0,kredit_new=0,kredit_total=0;

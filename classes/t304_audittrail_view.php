@@ -717,29 +717,46 @@ class t304_audittrail_view extends t304_audittrail
 				$this->id->setFormValue(Route(2));
 				$this->RecKey["id"] = $this->id->FormValue;
 			} else {
-				$returnUrl = "t304_audittraillist.php"; // Return to list
+				$loadCurrentRecord = TRUE;
 			}
 
 			// Get action
 			$this->CurrentAction = "show"; // Display
 			switch ($this->CurrentAction) {
 				case "show": // Get a record to display
+					$this->StartRecord = 1; // Initialize start position
+					if ($this->Recordset = $this->loadRecordset()) // Load records
+						$this->TotalRecords = $this->Recordset->RecordCount(); // Get record count
+					if ($this->TotalRecords <= 0) { // No record found
+						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
+							$this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
+						$this->terminate("t304_audittraillist.php"); // Return to list page
+					} elseif ($loadCurrentRecord) { // Load current record position
+						$this->setupStartRecord(); // Set up start record position
 
-					// Load record based on key
-					if (IsApi()) {
-						$filter = $this->getRecordFilter();
-						$this->CurrentFilter = $filter;
-						$sql = $this->getCurrentSql();
-						$conn = $this->getConnection();
-						$this->Recordset = LoadRecordset($sql, $conn);
-						$res = $this->Recordset && !$this->Recordset->EOF;
-					} else {
-						$res = $this->loadRow();
+						// Point to current record
+						if ($this->StartRecord <= $this->TotalRecords) {
+							$matchRecord = TRUE;
+							$this->Recordset->move($this->StartRecord - 1);
+						}
+					} else { // Match key values
+						while (!$this->Recordset->EOF) {
+							if (SameString($this->id->CurrentValue, $this->Recordset->fields('id'))) {
+								$this->setStartRecordNumber($this->StartRecord); // Save record position
+								$matchRecord = TRUE;
+								break;
+							} else {
+								$this->StartRecord++;
+								$this->Recordset->moveNext();
+							}
+						}
 					}
-					if (!$res) { // Load record based on key
+					if (!$matchRecord) {
 						if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
 							$this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
 						$returnUrl = "t304_audittraillist.php"; // No matching record, return to list
+					} else {
+						$this->loadRowValues($this->Recordset); // Load row values
 					}
 			}
 		} else {
@@ -766,6 +783,9 @@ class t304_audittrail_view extends t304_audittrail
 			WriteJson(["success" => TRUE, $this->TableVar => $rows]);
 			$this->terminate(TRUE);
 		}
+
+		// Set up pager
+		$this->Pager = new PrevNextPager($this->StartRecord, $this->DisplayRecords, $this->TotalRecords, "", $this->RecordRange, $this->AutoHidePager);
 	}
 
 	// Set up other options
@@ -818,6 +838,33 @@ class t304_audittrail_view extends t304_audittrail
 		$item = &$option->add($option->GroupOptionName);
 		$item->Body = "";
 		$item->Visible = FALSE;
+	}
+
+	// Load recordset
+	public function loadRecordset($offset = -1, $rowcnt = -1)
+	{
+
+		// Load List page SQL
+		$sql = $this->getListSql();
+		$conn = $this->getConnection();
+
+		// Load recordset
+		$dbtype = GetConnectionType($this->Dbid);
+		if ($this->UseSelectLimit) {
+			$conn->raiseErrorFn = Config("ERROR_FUNC");
+			if ($dbtype == "MSSQL") {
+				$rs = $conn->selectLimit($sql, $rowcnt, $offset, ["_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderBy())]);
+			} else {
+				$rs = $conn->selectLimit($sql, $rowcnt, $offset);
+			}
+			$conn->raiseErrorFn = "";
+		} else {
+			$rs = LoadRecordset($sql, $conn);
+		}
+
+		// Call Recordset Selected event
+		$this->Recordset_Selected($rs);
+		return $rs;
 	}
 
 	// Load row based on key values

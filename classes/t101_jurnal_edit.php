@@ -632,12 +632,6 @@ class t101_jurnal_edit extends t101_jurnal
 	public $IsMobileOrModal = FALSE;
 	public $DbMasterFilter;
 	public $DbDetailFilter;
-	public $DisplayRecords = 1;
-	public $StartRecord;
-	public $StopRecord;
-	public $TotalRecords = 0;
-	public $RecordRange = 10;
-	public $RecordCount;
 
 	//
 	// Page run
@@ -718,9 +712,6 @@ class t101_jurnal_edit extends t101_jurnal
 			$SkipHeaderFooter = TRUE;
 		$this->IsMobileOrModal = IsMobile() || $this->IsModal;
 		$this->FormClassName = "ew-form ew-edit-form ew-horizontal";
-
-		// Load record by position
-		$loadByPosition = FALSE;
 		$loaded = FALSE;
 		$postBack = FALSE;
 
@@ -748,44 +739,10 @@ class t101_jurnal_edit extends t101_jurnal
 			} else {
 				$this->id->CurrentValue = NULL;
 			}
-			if (!$loadByQuery)
-				$loadByPosition = TRUE;
 		}
 
-		// Load recordset
-		$this->StartRecord = 1; // Initialize start position
-		if ($rs = $this->loadRecordset()) // Load records
-			$this->TotalRecords = $rs->RecordCount(); // Get record count
-		if ($this->TotalRecords <= 0) { // No record found
-			if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
-				$this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
-			$this->terminate("t101_jurnallist.php"); // Return to list page
-		} elseif ($loadByPosition) { // Load record by position
-			$this->setupStartRecord(); // Set up start record position
-
-			// Point to current record
-			if ($this->StartRecord <= $this->TotalRecords) {
-				$rs->move($this->StartRecord - 1);
-				$loaded = TRUE;
-			}
-		} else { // Match key values
-			if ($this->id->CurrentValue != NULL) {
-				while (!$rs->EOF) {
-					if (SameString($this->id->CurrentValue, $rs->fields('id'))) {
-						$this->setStartRecordNumber($this->StartRecord); // Save record position
-						$loaded = TRUE;
-						break;
-					} else {
-						$this->StartRecord++;
-						$rs->moveNext();
-					}
-				}
-			}
-		}
-
-		// Load current row values
-		if ($loaded)
-			$this->loadRowValues($rs);
+		// Load current record
+		$loaded = $this->loadRow();
 
 		// Process form if post back
 		if ($postBack) {
@@ -813,11 +770,10 @@ class t101_jurnal_edit extends t101_jurnal
 		// Perform current action
 		switch ($this->CurrentAction) {
 			case "show": // Get a record to display
-				if (!$loaded) {
-					if ($this->getSuccessMessage() == "" && $this->getFailureMessage() == "")
-						$this->setFailureMessage($Language->phrase("NoRecord")); // Set no record message
-					$this->terminate("t101_jurnallist.php"); // Return to list page
-				} else {
+				if (!$loaded) { // Load record based on key
+					if ($this->getFailureMessage() == "")
+						$this->setFailureMessage($Language->phrase("NoRecord")); // No record found
+					$this->terminate("t101_jurnallist.php"); // No matching record, return to list
 				}
 
 				// Set up detail parameters
@@ -861,7 +817,6 @@ class t101_jurnal_edit extends t101_jurnal
 		$this->RowType = ROWTYPE_EDIT; // Render as Edit
 		$this->resetAttributes();
 		$this->renderRow();
-		$this->Pager = new PrevNextPager($this->StartRecord, $this->DisplayRecords, $this->TotalRecords, "", $this->RecordRange, $this->AutoHidePager);
 	}
 
 	// Get upload files
@@ -940,33 +895,6 @@ class t101_jurnal_edit extends t101_jurnal
 		$this->person_id->CurrentValue = $this->person_id->FormValue;
 		$this->createon->CurrentValue = $this->createon->FormValue;
 		$this->createon->CurrentValue = UnFormatDateTime($this->createon->CurrentValue, 0);
-	}
-
-	// Load recordset
-	public function loadRecordset($offset = -1, $rowcnt = -1)
-	{
-
-		// Load List page SQL
-		$sql = $this->getListSql();
-		$conn = $this->getConnection();
-
-		// Load recordset
-		$dbtype = GetConnectionType($this->Dbid);
-		if ($this->UseSelectLimit) {
-			$conn->raiseErrorFn = Config("ERROR_FUNC");
-			if ($dbtype == "MSSQL") {
-				$rs = $conn->selectLimit($sql, $rowcnt, $offset, ["_hasOrderBy" => trim($this->getOrderBy()) || trim($this->getSessionOrderBy())]);
-			} else {
-				$rs = $conn->selectLimit($sql, $rowcnt, $offset);
-			}
-			$conn->raiseErrorFn = "";
-		} else {
-			$rs = LoadRecordset($sql, $conn);
-		}
-
-		// Call Recordset Selected event
-		$this->Recordset_Selected($rs);
-		return $rs;
 	}
 
 	// Load row based on key values

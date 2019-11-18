@@ -223,10 +223,6 @@ loadjs.ready(["ft102_jurnaldedit"], function() {
 	</div><!-- /buttons offset -->
 </div><!-- /buttons .form-group -->
 <?php } ?>
-<?php if (!$t102_jurnald_edit->IsModal) { ?>
-<?php echo $t102_jurnald_edit->Pager->render() ?>
-<div class="clearfix"></div>
-<?php } ?>
 </form>
 <?php
 $t102_jurnald_edit->showPageFooter();

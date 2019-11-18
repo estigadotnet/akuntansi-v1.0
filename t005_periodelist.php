@@ -74,6 +74,19 @@ $t005_periode_list->showMessage();
 ?>
 <?php if ($t005_periode_list->TotalRecords > 0 || $t005_periode->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t005_periode_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t005_periode">
+<?php if (!$t005_periode_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t005_periode_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t005_periode_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t005_periode_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft005_periodelist" id="ft005_periodelist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -234,19 +247,6 @@ $t005_periode_list->ListOptions->render("body", "right", $t005_periode_list->Row
 if ($t005_periode_list->Recordset)
 	$t005_periode_list->Recordset->Close();
 ?>
-<?php if (!$t005_periode_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t005_periode_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t005_periode_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t005_periode_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t005_periode_list->TotalRecords == 0 && !$t005_periode->CurrentAction) { // Show other options ?>

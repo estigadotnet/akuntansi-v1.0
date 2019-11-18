@@ -64,6 +64,14 @@ loadjs.ready("head", function() {
 <?php
 $t304_audittrail_view->showMessage();
 ?>
+<?php if (!$t304_audittrail_view->IsModal) { ?>
+<?php if (!$t304_audittrail_view->isExport()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t304_audittrail_view->Pager->render() ?>
+<div class="clearfix"></div>
+</form>
+<?php } ?>
+<?php } ?>
 <form name="ft304_audittrailview" id="ft304_audittrailview" class="form-inline ew-form ew-view-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">

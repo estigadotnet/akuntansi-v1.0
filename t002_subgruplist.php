@@ -144,6 +144,19 @@ $t002_subgrup_list->showMessage();
 ?>
 <?php if ($t002_subgrup_list->TotalRecords > 0 || $t002_subgrup->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t002_subgrup_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t002_subgrup">
+<?php if (!$t002_subgrup_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t002_subgrup_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t002_subgrup_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t002_subgrup_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft002_subgruplist" id="ft002_subgruplist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -441,19 +454,6 @@ loadjs.ready(["ft002_subgruplist", "load"], function() {
 if ($t002_subgrup_list->Recordset)
 	$t002_subgrup_list->Recordset->Close();
 ?>
-<?php if (!$t002_subgrup_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t002_subgrup_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t002_subgrup_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t002_subgrup_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t002_subgrup_list->TotalRecords == 0 && !$t002_subgrup->CurrentAction) { // Show other options ?>

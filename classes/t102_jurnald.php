@@ -968,11 +968,27 @@ class t102_jurnald extends DbTable
 	// Aggregate list row values
 	public function aggregateListRowValues()
 	{
+			if (is_numeric($this->debet->CurrentValue))
+				$this->debet->Total += $this->debet->CurrentValue; // Accumulate total
+			if (is_numeric($this->kredit->CurrentValue))
+				$this->kredit->Total += $this->kredit->CurrentValue; // Accumulate total
 	}
 
 	// Aggregate list row (for rendering)
 	public function aggregateListRow()
 	{
+			$this->debet->CurrentValue = $this->debet->Total;
+			$this->debet->ViewValue = $this->debet->CurrentValue;
+			$this->debet->ViewValue = FormatNumber($this->debet->ViewValue, 0, -2, -2, -2);
+			$this->debet->CellCssStyle .= "text-align: right;";
+			$this->debet->ViewCustomAttributes = "";
+			$this->debet->HrefValue = ""; // Clear href value
+			$this->kredit->CurrentValue = $this->kredit->Total;
+			$this->kredit->ViewValue = $this->kredit->CurrentValue;
+			$this->kredit->ViewValue = FormatNumber($this->kredit->ViewValue, 0, -2, -2, -2);
+			$this->kredit->CellCssStyle .= "text-align: right;";
+			$this->kredit->ViewCustomAttributes = "";
+			$this->kredit->HrefValue = ""; // Clear href value
 
 		// Call Row Rendered event
 		$this->Row_Rendered();
@@ -1023,6 +1039,7 @@ class t102_jurnald extends DbTable
 						$doc->exportPageBreak();
 				}
 				$this->loadListRowValues($recordset);
+				$this->aggregateListRowValues(); // Aggregate row values
 
 				// Render row
 				$this->RowType = ROWTYPE_VIEW; // Render view
@@ -1050,6 +1067,22 @@ class t102_jurnald extends DbTable
 			if ($doc->ExportCustom)
 				$this->Row_Export($recordset->fields);
 			$recordset->moveNext();
+		}
+
+		// Export aggregates (horizontal format only)
+		if ($doc->Horizontal) {
+			$this->RowType = ROWTYPE_AGGREGATE;
+			$this->resetAttributes();
+			$this->aggregateListRow();
+			if (!$doc->ExportCustom) {
+				$doc->beginExportRow(-1);
+				$doc->exportAggregate($this->id, '');
+				$doc->exportAggregate($this->jurnal_id, '');
+				$doc->exportAggregate($this->akun_id, '');
+				$doc->exportAggregate($this->debet, 'TOTAL');
+				$doc->exportAggregate($this->kredit, 'TOTAL');
+				$doc->endExportRow();
+			}
 		}
 		if (!$doc->ExportCustom) {
 			$doc->exportTableFooter();
@@ -1349,6 +1382,10 @@ class t102_jurnald extends DbTable
 		// To view properties of field class, use:
 		//var_dump($this-><FieldName>);
 
+		$this->debet->EditAttrs["onchange"] = "debet_onchange(event)";
+		$this->debet->EditAttrs["onfocus"] = "debet_onfocus(event)";
+		$this->kredit->EditAttrs["onchange"] = "kredit_onchange(event)";
+		$this->kredit->EditAttrs["onfocus"] = "kredit_onfocus(event)";
 	}
 
 	// User ID Filtering event

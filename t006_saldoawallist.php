@@ -212,6 +212,19 @@ $t006_saldoawal_list->showMessage();
 ?>
 <?php if ($t006_saldoawal_list->TotalRecords > 0 || $t006_saldoawal->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t006_saldoawal_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t006_saldoawal">
+<?php if (!$t006_saldoawal_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t006_saldoawal_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t006_saldoawal_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t006_saldoawal_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft006_saldoawallist" id="ft006_saldoawallist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -658,19 +671,6 @@ loadjs.ready(["ft006_saldoawallist", "load"], function() {
 if ($t006_saldoawal_list->Recordset)
 	$t006_saldoawal_list->Recordset->Close();
 ?>
-<?php if (!$t006_saldoawal_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t006_saldoawal_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t006_saldoawal_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t006_saldoawal_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t006_saldoawal_list->TotalRecords == 0 && !$t006_saldoawal->CurrentAction) { // Show other options ?>

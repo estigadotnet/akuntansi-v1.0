@@ -1269,17 +1269,6 @@ class t102_jurnald_add extends t102_jurnald
 	protected function addRow($rsold = NULL)
 	{
 		global $Language, $Security;
-		if ($this->akun_id->CurrentValue != "") { // Check field with unique index
-			$filter = "(akun_id = " . AdjustSql($this->akun_id->CurrentValue, $this->Dbid) . ")";
-			$rsChk = $this->loadRs($filter);
-			if ($rsChk && !$rsChk->EOF) {
-				$idxErrMsg = str_replace("%f", $this->akun_id->caption(), $Language->phrase("DupIndex"));
-				$idxErrMsg = str_replace("%v", $this->akun_id->CurrentValue, $idxErrMsg);
-				$this->setFailureMessage($idxErrMsg);
-				$rsChk->close();
-				return FALSE;
-			}
-		}
 
 		// Check referential integrity for master table 't102_jurnald'
 		$validMasterRecord = TRUE;

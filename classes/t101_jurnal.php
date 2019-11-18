@@ -265,7 +265,7 @@ class t101_jurnal extends DbTable
 	}
 	public function getSqlOrderBy() // Order By
 	{
-		return ($this->SqlOrderBy != "") ? $this->SqlOrderBy : "";
+		return ($this->SqlOrderBy != "") ? $this->SqlOrderBy : "`createon` DESC";
 	}
 	public function sqlOrderBy() // For backward compatibility
 	{

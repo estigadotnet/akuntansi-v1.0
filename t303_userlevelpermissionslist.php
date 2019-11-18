@@ -120,6 +120,19 @@ $t303_userlevelpermissions_list->showMessage();
 ?>
 <?php if ($t303_userlevelpermissions_list->TotalRecords > 0 || $t303_userlevelpermissions->CurrentAction) { ?>
 <div class="card ew-card ew-grid<?php if ($t303_userlevelpermissions_list->isAddOrEdit()) { ?> ew-grid-add-edit<?php } ?> t303_userlevelpermissions">
+<?php if (!$t303_userlevelpermissions_list->isExport()) { ?>
+<div class="card-header ew-grid-upper-panel">
+<?php if (!$t303_userlevelpermissions_list->isGridAdd()) { ?>
+<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
+<?php echo $t303_userlevelpermissions_list->Pager->render() ?>
+</form>
+<?php } ?>
+<div class="ew-list-other-options">
+<?php $t303_userlevelpermissions_list->OtherOptions->render("body") ?>
+</div>
+<div class="clearfix"></div>
+</div>
+<?php } ?>
 <form name="ft303_userlevelpermissionslist" id="ft303_userlevelpermissionslist" class="form-inline ew-form ew-list-form" action="<?php echo CurrentPageName() ?>" method="post">
 <?php if ($Page->CheckToken) { ?>
 <input type="hidden" name="<?php echo Config("TOKEN_NAME") ?>" value="<?php echo $Page->Token ?>">
@@ -280,19 +293,6 @@ $t303_userlevelpermissions_list->ListOptions->render("body", "right", $t303_user
 if ($t303_userlevelpermissions_list->Recordset)
 	$t303_userlevelpermissions_list->Recordset->Close();
 ?>
-<?php if (!$t303_userlevelpermissions_list->isExport()) { ?>
-<div class="card-footer ew-grid-lower-panel">
-<?php if (!$t303_userlevelpermissions_list->isGridAdd()) { ?>
-<form name="ew-pager-form" class="form-inline ew-form ew-pager-form" action="<?php echo CurrentPageName() ?>">
-<?php echo $t303_userlevelpermissions_list->Pager->render() ?>
-</form>
-<?php } ?>
-<div class="ew-list-other-options">
-<?php $t303_userlevelpermissions_list->OtherOptions->render("body", "bottom") ?>
-</div>
-<div class="clearfix"></div>
-</div>
-<?php } ?>
 </div><!-- /.ew-grid -->
 <?php } ?>
 <?php if ($t303_userlevelpermissions_list->TotalRecords == 0 && !$t303_userlevelpermissions->CurrentAction) { // Show other options ?>
